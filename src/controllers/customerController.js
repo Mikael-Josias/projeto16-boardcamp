@@ -3,6 +3,8 @@ import { customerSchema } from "../schemas/customerSchema.js";
 
 import chalk from "chalk";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+dayjs.extend(customParseFormat);
 
 export async function listAllCustomers(req, res) {
     try {
@@ -32,9 +34,9 @@ export async function insertNewCustomer(req, res) {
             name: req.body.name,
             phone: req.body.phone,
             cpf: req.body.cpf,
-            birthday: dayjs(req.body.birthday, "YYYY-MM-DD"),
+            birthday: dayjs(req.body.birthday, "YYYY-MM-DD").toDate(),
         };
-        if (customerSchema.validate().error) return res.sendStatus(400);
+        if (customerSchema.validate(data).error) return res.sendStatus(400);
 
         const customerAlreadyExists = await db.query(`SELECT cpf FROM customers WHERE cpf = $1;`, [data.cpf]);
         if (customerAlreadyExists.rowCount !== 0) return res.sendStatus(409);
@@ -47,4 +49,4 @@ export async function insertNewCustomer(req, res) {
         console.log(chalk.redBright.white(error));
         res.sendStatus(500);
     }
-}
+};
