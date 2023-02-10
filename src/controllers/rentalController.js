@@ -77,3 +77,24 @@ export async function returnRentedGame(req, res) {
         res.sendStatus(500);
     }
 };
+
+export async function deleteRental(req, res) {
+    try {
+        const rentalId = req.params.id;
+
+        const rentalData = await db.query(
+            `SELECT "returnDate" FROM rentals WHERE id = $1;`,
+            [rentalId]);
+        if (rentalData.rows.length === 0) return res.sendStatus(404);
+        if (!rentalData.rows[0].returnDate) return res.sendStatus(400);
+        
+        const result = await db.query(
+            `DELETE FROM rentals WHERE id = $1`,
+            [rentalId]);
+
+        result.rowCount !== 0 ? res.sendStatus(200) : res.sendStatus(404);
+    } catch (error) {
+        console.log(chalk.white.redBright(error));
+        res.sendStatus(500);
+    }
+};
