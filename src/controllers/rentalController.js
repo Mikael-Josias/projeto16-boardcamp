@@ -9,7 +9,7 @@ export async function listAllRentals(req, res) {
         const rentals = await db.query(`SELECT * FROM rentals;`);
         for (const rental of rentals.rows) {
             const customer = await db.query(`SELECT id, name FROM customers WHERE id = $1;`, [rental.customerId]);
-            const game = await db.query(`SELECT id, name FROM customers WHERE id = $1;`, [rental.gameId]);
+            const game = await db.query(`SELECT id, name FROM games WHERE id = $1;`, [rental.gameId]);
 
             rental.customers = customer.rows[0];
             rental.game = game.rows[0];
