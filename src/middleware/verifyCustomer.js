@@ -4,7 +4,8 @@ import chalk from "chalk";
 
 export async function verifyCustomerExists(req, res, next) {
     try {
-        const { customerId } = req.body;
+        const customerId = Number(req.body.customerId);
+        if (Number.isNaN(customerId)) return res.sendStatus(400);
 
         const customerExists = await db.query(`SELECT id FROM customers WHERE id = $1`, [customerId]);
         if (customerExists.rowCount === 0)  return res.sendStatus(400);
