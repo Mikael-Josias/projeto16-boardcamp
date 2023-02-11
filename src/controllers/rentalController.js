@@ -71,7 +71,7 @@ export async function returnRentedGame(req, res) {
         const result = await db.query(
             `UPDATE rentals SET "returnDate" = $1, "delayFee" = $2 WHERE id = $3;`,
             [today, delayFee, rentalId]);
-        result.rowCount !== 0 ? res.sendStatus(201) : res.sendStatus(400);
+        result.rowCount !== 0 ? res.sendStatus(200) : res.sendStatus(400);
     } catch (error) {
         console.log(chalk.redBright.white(error));
         res.sendStatus(500);
